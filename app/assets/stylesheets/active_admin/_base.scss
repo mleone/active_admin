@@ -16,6 +16,7 @@
 @import "active_admin/components/datetimepicker";
 @import "active_admin/components/redactor";
 @import "active_admin/components/popovers";
+@import "active_admin/components/date_picker";
 @import "active_admin/components/tables";
 @import "active_admin/components/batch_actions";
 @import "active_admin/components/modal_dialog";
@@ -42,11 +43,9 @@
 
 body {
   @include sans-family;
-  line-height: 150%;
+  line-height: 1.5;
   font-size: 72%;
   background: $body-background-color;
-  margin: 0;
-  padding: 0;
   color: $text-color;
 
   /* for ckeditor */
