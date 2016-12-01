@@ -15,19 +15,19 @@ module ActiveAdmin
         end
 
         def gt_input_name
-          "#{method}_gteq"
+          "#{method}_gteq_date"
         end
         alias :input_name :gt_input_name
 
         def lt_input_name
-          "#{method}_lteq"
+          "#{method}_lteq_date"
         end
 
         def input_html_options(input_name = gt_input_name)
           current_value = @object.public_send input_name
           { size: 12,
             class: "datepicker",
-            max: 10,
+            maxlength: 10,
             value: current_value.respond_to?(:strftime) ? current_value.strftime("%Y-%m-%d") : "" }
         end
       end

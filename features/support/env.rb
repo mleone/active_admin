@@ -4,7 +4,7 @@
 # instead of editing this one. Cucumber will automatically load all features/**/*.rb
 # files.
 
-ENV["RAILS_ENV"] ||= "cucumber"
+ENV['RAILS_ENV'] = 'test'
 
 require File.expand_path('../../../spec/spec_helper', __FILE__)
 
@@ -58,6 +58,9 @@ Capybara.javascript_driver = :poltergeist
 # steps to use the XPath syntax.
 Capybara.default_selector = :css
 
+# Make input type=hidden visible
+Capybara.ignore_hidden_elements = false
+
 # If you set this to false, any error raised from within your app will bubble
 # up to your step definition and out to cucumber unless you catch it somewhere
 # on the way. You can make Rails rescue errors and render error pages on a
@@ -81,7 +84,12 @@ ActionController::Base.allow_rescue = false
 # after each scenario, which can lead to hard-to-debug failures in
 # subsequent scenarios. If you do this, we recommend you create a Before
 # block that will explicitly put your database in a known state.
-Cucumber::Rails::World.use_transactional_fixtures = false
+if ActiveAdmin::Dependency.rails5?
+  Cucumber::Rails::World.use_transactional_tests = true
+else
+  Cucumber::Rails::World.use_transactional_fixtures = true
+end
+
 # How to clean your database when transactions are turned off. See
 # http://github.com/bmabey/database_cleaner for more info.
 if defined?(ActiveRecord::Base)
@@ -89,7 +97,8 @@ if defined?(ActiveRecord::Base)
     require 'database_cleaner'
     require 'database_cleaner/cucumber'
     DatabaseCleaner.strategy = :truncation
-  rescue LoadError => ignore_if_database_cleaner_not_present
+  rescue LoadError
+    # ignore if database_cleaner isn't present
   end
 end
 
@@ -106,7 +115,6 @@ After do
 end
 
 Before do
-
   begin
     # We are caching classes, but need to manually clear references to
     # the controllers. If they aren't clear, the router stores references
@@ -119,6 +127,15 @@ Before do
     p $!
     raise $!
   end
+end
+
+# Force deprecations to raise an exception.
+# This would set `behavior = :raise`, but that wasn't added until Rails 4.
+ActiveSupport::Deprecation.behavior = -> message, callstack do
+  e = StandardError.new message
+  e.set_backtrace callstack.map(&:to_s)
+  puts e # sometimes Cucumber otherwise won't show the error message
+  raise e
 end
 
 # improve the performance of the specs suite by not logging anything
