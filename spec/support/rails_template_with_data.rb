@@ -1,12 +1,29 @@
-# Use the default
 apply File.expand_path("../rails_template.rb", __FILE__)
 
-# Register Active Admin controllers
-%w{ Post User Category }.each do |type|
+%w{Post User Category}.each do |type|
   generate :'active_admin:resource', type
 end
 
-scopes = <<-EOF
+inject_into_file 'app/admin/category.rb', <<-RUBY, after: "ActiveAdmin.register Category do\n"
+
+  if Rails::VERSION::MAJOR >= 4
+    permit_params [:name, :description]
+  end
+RUBY
+
+inject_into_file 'app/admin/user.rb', <<-RUBY, after: "ActiveAdmin.register User do\n"
+
+  if Rails::VERSION::MAJOR >= 4
+    permit_params [:first_name, :last_name, :username, :age]
+  end
+RUBY
+
+inject_into_file 'app/admin/post.rb', <<-RUBY, after: "ActiveAdmin.register Post do\n"
+
+  if Rails::VERSION::MAJOR >= 4
+    permit_params [:custom_category_id, :author_id, :title, :body, :published_at, :position, :starred]
+  end
+
   scope :all, default: true
 
   scope :drafts do |posts|
@@ -24,11 +41,9 @@ scopes = <<-EOF
   scope :my_posts do |posts|
     posts.where(author_id: current_admin_user.id)
   end
-EOF
-inject_into_file 'app/admin/posts.rb', scopes , after: "ActiveAdmin.register Post do\n"
+RUBY
 
-# Setup some default data
-append_file "db/seeds.rb", <<-EOF
+append_file "db/seeds.rb", "\n\n" + <<-RUBY.strip_heredoc
   users = ["Jimi Hendrix", "Jimmy Page", "Yngwie Malmsteen", "Eric Clapton", "Kirk Hammett"].collect do |name|
     first, last = name.split(" ")
     User.create!  first_name: first,
@@ -54,6 +69,6 @@ append_file "db/seeds.rb", <<-EOF
                 author: user,
                 starred: true
   end
-EOF
+RUBY
 
 rake 'db:seed'

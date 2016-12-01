@@ -32,7 +32,8 @@ es:
         greater_than: "Mayor que"
         less_than: "Menor que"
     search_status:
-      headline: "Alcance:"
+      headline: "Estado de la búsqueda:"
+      current_scope: "Alcance:"
       current_filters: "Filtros actuales:"
       no_current_filters: "Ninguno"
     status_tag:
@@ -68,16 +69,19 @@ es:
         other: "Se han destruido %{count} %{plural_model} con éxito"
       selection_toggle_explanation: "(Cambiar selección)"
       link: "Añadir"
-      action_label: "%{title} seleccionado"
+      action_label: "%{title} seleccionados"
       labels:
         destroy: "Borrar"
     comments:
+      created_at: "Fecha de creación"
       resource_type: "Tipo de recurso"
       author_type: "Tipo de autor"
       body: "Cuerpo"
       author: "Autor"
       title: "Comentario"
       add: "Comentar"
+      delete: "Borrar Comentario"
+      delete_confirmation: "¿Está seguro que desea borrar este comentario?"
       resource: "Recurso"
       no_comments_yet: "No hay comentarios aún."
       author_missing: "Anónimo"
@@ -97,9 +101,9 @@ es:
         title: "Registrarse"
         submit: "Registrarse"
       login:
-        title: "iniciar sesión"
+        title: "Iniciar Sesión"
         remember_me: "Recordarme"
-        submit: "iniciar sesión"
+        submit: "Iniciar Sesión"
       reset_password:
         title: "¿Olvidó su contraseña?"
         submit: "Restablecer mi contraseña"
@@ -114,7 +118,7 @@ es:
         submit: "Reenviar instrucciones de confirmación"
       links:
         sign_up: "Ingresar"
-        sign_in: "registrarse"
+        sign_in: "Registrarse"
         forgot_your_password: "¿Olvidó su contraseña?"
         sign_in_with_omniauth_provider: "Conéctate con %{provider}"
         resend_unlock_instructions: "Reenviar instrucciones de desbloqueo"

@@ -86,7 +86,6 @@ module ActiveAdminIntegrationSpecHelper
   ensure
     I18n.backend.reload!
   end
-
 end
 
 ENV['RAILS_ENV'] = 'test'
@@ -107,6 +106,10 @@ require ENV['RAILS_ROOT'] + '/config/environment'
 
 require 'rspec/rails'
 
+# Prevent Test::Unit's AutoRunner from executing during RSpec's rake task on
+# JRuby
+Test::Unit.run = true if defined?(Test::Unit) && Test::Unit.respond_to?(:run=)
+
 # Setup Some Admin stuff for us to play with
 include ActiveAdminIntegrationSpecHelper
 load_defaults!
@@ -117,32 +120,33 @@ reload_routes!
 ActiveAdmin.application.authentication_method = false
 ActiveAdmin.application.current_user_method = false
 
-# Don't add asset cache timestamps. Makes it easy to integration
-# test for the presence of an asset file
-ENV["RAILS_ASSET_ID"] = ''
-
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
   config.use_instantiated_fixtures = false
-  config.include Devise::TestHelpers, type: :controller
   config.render_views = false
   config.filter_run focus: true
   config.filter_run_excluding skip: true
   config.run_all_when_everything_filtered = true
+  config.color = true
+
+  devise = ActiveAdmin::Dependency.devise >= '4.2' ? Devise::Test::ControllerHelpers : Devise::TestHelpers
+  config.include devise, type: :controller
+
+  require 'support/active_admin_request_helpers'
+  config.include ActiveAdminRequestHelpers, type: :request
 end
 
-# All RSpec configuration needs to happen before any examples
-# or else it whines.
-require 'integration_example_group'
-RSpec.configure do |c|
-  c.include RSpec::Rails::IntegrationExampleGroup, file_path: /\bspec\/requests\//
-  c.include Devise::TestHelpers, type: :controller
+# Force deprecations to raise an exception.
+# This would set `behavior = :raise`, but that wasn't added until Rails 4.
+ActiveSupport::Deprecation.behavior = -> message, callstack do
+  e = StandardError.new message
+  e.set_backtrace callstack.map(&:to_s)
+  raise e
 end
 
 # improve the performance of the specs suite by not logging anything
 # see http://blog.plataformatec.com.br/2011/12/three-tips-to-improve-the-performance-of-your-test-suite/
 Rails.logger.level = 4
-
 
 # Improves performance by forcing the garbage collector to run less often.
 unless ENV['DEFER_GC'] == '0' || ENV['DEFER_GC'] == 'false'
@@ -152,3 +156,6 @@ unless ENV['DEFER_GC'] == '0' || ENV['DEFER_GC'] == 'false'
     config.after(:all)  { DeferredGarbageCollection.reconsider }
   end
 end
+
+# Make input type=hidden visible
+Capybara.ignore_hidden_elements = false

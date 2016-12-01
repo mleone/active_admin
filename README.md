@@ -6,16 +6,14 @@ Active Admin is a Ruby on Rails framework for creating elegant backends for webs
 [![Travis CI       ](http://img.shields.io/travis/activeadmin/activeadmin/master.svg)           ](https://travis-ci.org/activeadmin/activeadmin)
 [![Quality         ](http://img.shields.io/codeclimate/github/activeadmin/activeadmin.svg)      ](https://codeclimate.com/github/activeadmin/activeadmin)
 [![Coverage        ](http://img.shields.io/coveralls/activeadmin/activeadmin.svg)               ](https://coveralls.io/r/activeadmin/activeadmin)
-[![Gittip          ](http://img.shields.io/gittip/activeadmin.svg)                              ](https://gittip.com/activeadmin)
 [![Inch CI         ](http://inch-ci.org/github/activeadmin/activeadmin.svg?branch=master)       ](http://inch-ci.org/github/activeadmin/activeadmin)
-[![Stories in Ready](http://badge.waffle.io/activeadmin/activeadmin.png?label=ready&title=ready)](https://waffle.io/activeadmin/activeadmin)
 
 ## State of the project
 
 ### 1.0.0
 
 We're [currently working on 1.0.0](https://github.com/activeadmin/activeadmin/issues?milestone=18),
-which as far as dependencies, moves us from meta_search to Ransack and adds Rails 4 support.
+which as far as dependencies, moves us from meta_search to Ransack and adds Rails 4 & 5 support.
 
 You can get it by tracking master:
 ```ruby
@@ -24,10 +22,18 @@ gem 'activeadmin', github: 'activeadmin'
 
 Or you can using rubygems:
 ```ruby
-gem 'activeadmin', '~> 1.0.0.pre1'
+gem 'activeadmin', '~> 1.0.0.pre4'
 ```
 
 *Keep in mind that during the time where we use `pre`-release label, things can break in each release!*
+
+### Rails 5
+
+Active Admin master has preliminary support for Rails 5. To give it a try, these Gemfile changes may be needed:
+
+```ruby
+gem 'inherited_resources', github: 'activeadmin/inherited_resources'
+```
 
 ### 0.6.x
 
